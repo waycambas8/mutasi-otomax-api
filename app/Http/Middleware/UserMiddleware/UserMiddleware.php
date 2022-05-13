@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Middleware\BaseMiddleware;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Transformer\UserTransformers\UserTransformerMiddleware;
+use Carbon\Carbon;
 
 use App\Models\Users;
 
@@ -17,7 +18,12 @@ class UserMiddleware extends BaseMiddleware
         if($this->Model->user){
             $this->Model->kode = $this->_Request->kode;
             $this->Model->nama = $this->Model->user->nama;
-            $this->Model->daftar = $this->Model->user->tgl_daftar;
+            $this->Model->pin = $this->Model->user->pin;
+            $this->Model->tgl_daftar = $this->Model->user->tgl_daftar;
+            $this->Model->token = bcrypt(base64_encode($this->Model->kode.":".$this->Model->pin.":".Carbon::now()));
+            $this->Model->token_date = Carbon::now()->format("Y-m-d h:i:s");
+            $this->Model->expired_token = Carbon::now()->addDay(1)->format("Y-m-d h:i:s");
+            $this->Model->ip = $this->_Request->ip();
         }
     }
 
@@ -52,9 +58,12 @@ class UserMiddleware extends BaseMiddleware
     {
         $this->Instantiate();
         if($this->validation()){
-            return $next($request);
+            $this->Payload->put('Model', $this->Model);
+            $this->_Request->merge(['Payload' => $this->Payload]);
+
+            return $next($this->_Request);
         }else{
-            return response()->json(fractal()->collection($this->msg)->transformWith(new UserTransformerMiddleware)->toArray(),$this->HttpCode);
+            return response()->json(fractal()->collection($this->msg)->transformWith(new UserTransformerMiddleware),$this->HttpCode);
         }
     }
 }

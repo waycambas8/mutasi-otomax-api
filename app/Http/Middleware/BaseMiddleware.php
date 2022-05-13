@@ -14,6 +14,7 @@ abstract class BaseMiddleware
         $this->_Request = $request;
         $this->Model = (object)[];
         $this->HttpCode = 401;
+        $this->Payload = collect([]);
         $this->get_token_server();
     }
 

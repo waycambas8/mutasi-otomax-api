@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestingController;
 use App\Http\Controllers\UserController\UserController;
+use App\Http\Controllers\TicketController\TicketBrowseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,4 +25,9 @@ Route::post("testing", [TestingController::class,"testing"])->name("testing");
 
 Route::controller(UserController::class)->group(function(){
     Route::post("login","login")->name("login")->middleware("login");
+});
+
+Route::group(['prefix' => 'ticket'], function () {
+    Route::post('/', [ TicketBrowseController::class,"get"]);
+  
 });
