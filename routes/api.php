@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestingController;
 use App\Http\Controllers\UserController\UserController;
 use App\Http\Controllers\TicketController\TicketBrowseController;
+use App\Http\Controllers\MutasiController\MutasiBrowseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,5 +30,8 @@ Route::controller(UserController::class)->group(function(){
 
 Route::group(['prefix' => 'ticket'], function () {
     Route::post('/', [ TicketBrowseController::class,"get"]);
-  
+});
+
+Route::group(['prefix' => 'mutasi'], function() {
+    Route::post("/", [MutasiBrowseController::class,"get"]);
 });

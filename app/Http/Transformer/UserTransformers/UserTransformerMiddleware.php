@@ -6,7 +6,7 @@ class UserTransformerMiddleware extends TransformerAbstract
 {
     public function transform($model){
         return [
-            "msg" => $model['msg']
+            $model
         ];
     }
 }
