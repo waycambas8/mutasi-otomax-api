@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Mutasi extends Model
 {
-    public $timestamps = false;
+    // public $timestamps = false;
     protected $table = 'mutasi';
     protected $primaryKey = 'kode';
 }

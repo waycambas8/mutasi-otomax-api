@@ -24,6 +24,7 @@ class UserMiddleware extends BaseMiddleware
             $this->Model->token_date = Carbon::now()->format("Y-m-d h:i:s");
             $this->Model->expired_token = Carbon::now()->addDay(1)->format("Y-m-d h:i:s");
             $this->Model->ip = $this->_Request->ip();
+            $this->Model->response = $this->code['success'];
         }
     }
 
@@ -34,21 +35,27 @@ class UserMiddleware extends BaseMiddleware
         ]);
  
         if ($validator->fails()) {
-            $this->msg = array(array("msg" => $validator->messages()->toArray()));
+            $this->msg = array(
+                array(
+                    "msg" => $validator->messages()->toArray(),
+                    "response" => $this->code['fail']
+                    )
+            );
             return false;
         }
 
         if(!$this->Model->user){
             $this->msg = [
                 [
-                    "msg" => "User not found"
+                    "msg" => "User not found",
+                    "response" => $this->code['fail']
                 ]
             ];
             return false;
         }
 
         if(!$this->Model->login = Users::where("kode",$this->_Request->kode)->where("pin",$this->_Request->pin)->exists()){
-            $this->msg = array(array("msg" => "Code or Pin is wrong"));
+            $this->msg = array(array("msg" => "Code or Pin is wrong","response" => $this->code['fail']));
             return false;
         }
         return true;

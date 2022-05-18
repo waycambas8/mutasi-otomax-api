@@ -9,11 +9,11 @@ class UserTransformerController extends TransformerAbstract
             "kode" => $model->kode,
             "nama" => $model->nama,
             "daftar" => $model->tgl_daftar,
-            "pin" => $model->pin,
             "token" => $model->token,
             "token_date" => $model->token_date,
             "expired_token" => $model->expired_token,
-            "ip" => $model->ip
+            "ip" => $model->ip,
+            "response" => $model->response
         ];
     }
 }
