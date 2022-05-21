@@ -41,7 +41,7 @@ class MutasiBrowseController extends Controller
                             ->orWhere("jumlah","like","%".$searchValue."%")
                             ->orWhere("keterangan","like","%".$searchValue."%");
                     })
-                    ->whereBetween("tanggal",[$request->get('date_from'),$request->get('date_end')])
+                    ->whereBetween("tanggal",[$request->get('date_frosm'),$request->get('date_end')])
                     ->skip($this->start)
                     ->take($this->rowperpage)
                     ->get()->toArray();
