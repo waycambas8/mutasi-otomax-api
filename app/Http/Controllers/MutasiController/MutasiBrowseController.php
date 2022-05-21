@@ -55,5 +55,33 @@ class MutasiBrowseController extends Controller
             ->serializeWith(new \Spatie\Fractalistic\ArraySerializer()); 
     }
 
+    public function get_type(Request $request){
+        $data = Mutasi::select("jenis")->groupBy("jenis")->get();
+        foreach($data as $v){
+            if($v->jenis == "G"){
+                $arr[] = array(
+                    "jenis" => "G",
+                    "deskripsi" => "Refund"
+                );
+            }elseif($v->jenis == "T"){
+                $arr[] = array(
+                    "jenis" => "T",
+                    "deskripsi" => "Transaksi"
+                );
+            }elseif($v->jenis == "B"){
+                $arr[] = array(
+                    "jenis" => "B",
+                    "deskripsi" => "Ticket"
+                );
+            }elseif(empty($v->jenis)){
+                $arr[] = array(
+                    "jenis" => null,
+                    "deskripsi" => "Mutasi Manual"
+                );
+            }
+        }
+        return response()->json($arr);
+    }
+
     
 }
