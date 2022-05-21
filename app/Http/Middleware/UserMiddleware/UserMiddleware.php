@@ -45,12 +45,10 @@ class UserMiddleware extends BaseMiddleware
         }
 
         if(!$this->Model->user){
-            $this->msg = [
-                [
-                    "msg" => "User not found",
+            $this->msg = [[
+                    "msg" => array("User Not found"),
                     "response" => $this->code['fail']
-                ]
-            ];
+                ]];
             return false;
         }
 
