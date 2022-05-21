@@ -9,6 +9,7 @@ use App\Models\Mutasi;
 
 use App\Http\Transformer\DatatablesTransformers\DatatablesTransformers;
 use App\Traits\Datatables;
+use Carbon\Carbon;
 
 class MutasiBrowseController extends Controller
 {
@@ -17,10 +18,12 @@ class MutasiBrowseController extends Controller
     public function get(Request $request){
         $this->datatables($request);
         $searchValue = $this->searchValue;
+        $date_from = Carbon::parse($request->get('date_from'))->startOfDay();
+        $date_end = Carbon::parse($request->get('date_end'))->endOfDay();
 
         $response['count'] =  Mutasi::select('count(*) as allcount')
                 ->where("kode_reseller",$this->kode)
-                ->whereBetween("tanggal",[$request->get('date_from'),$request->get('date_end')])
+                ->whereBetween("tanggal",[$date_from,$date_end])
                 ->orderBy("kode","desc")
                 ->count();
 
@@ -30,7 +33,7 @@ class MutasiBrowseController extends Controller
                             ->orWhere("jumlah","like","%".$searchValue."%")
                             ->orWhere("keterangan","like","%".$searchValue."%");
                     })
-                    ->whereBetween("tanggal",[$request->get('date_from'),$request->get('date_end')])
+                    ->whereBetween("tanggal",[$date_from,$date_end])
                     ->orderBy("kode","desc")
                     ->count();
         
@@ -41,7 +44,7 @@ class MutasiBrowseController extends Controller
                             ->orWhere("jumlah","like","%".$searchValue."%")
                             ->orWhere("keterangan","like","%".$searchValue."%");
                     })
-                    ->whereBetween("tanggal",[$request->get('date_from'),$request->get('date_end')])
+                    ->whereBetween("tanggal",[$date_from,$date_end])
                     ->skip($this->start)
                     ->take($this->rowperpage)
                     ->get()->toArray();
