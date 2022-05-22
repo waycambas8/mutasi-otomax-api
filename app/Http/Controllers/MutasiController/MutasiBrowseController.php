@@ -17,6 +17,7 @@ class MutasiBrowseController extends Controller
     
     public function get(Request $request){
         $this->datatables($request);
+        $type = $request->get("type");
         $searchValue = $this->searchValue;
         $date_from = Carbon::parse($request->get('date_from'))->startOfDay();
         $date_end = Carbon::parse($request->get('date_end'))->endOfDay();
@@ -24,9 +25,8 @@ class MutasiBrowseController extends Controller
         $response['count'] =  Mutasi::select('count(*) as allcount')
                 ->where("kode_reseller",$this->kode)
                 ->whereBetween("tanggal",[$date_from,$date_end])
-                ->orderBy("kode","desc")
-                ->count();
-
+                ->orderBy("kode","desc");
+        
         $response['totalRecordswithFilter'] = Mutasi::where("kode_reseller",$this->kode)
                     ->where(function ($query) use ($searchValue) {
                         $query->where("tanggal","like","%".$searchValue."%")
@@ -34,8 +34,8 @@ class MutasiBrowseController extends Controller
                             ->orWhere("keterangan","like","%".$searchValue."%");
                     })
                     ->whereBetween("tanggal",[$date_from,$date_end])
-                    ->orderBy("kode","desc")
-                    ->count();
+                    ->orderBy("kode","desc");
+                    
         
         $response['records'] = Mutasi::orderBy($this->columnName,$this->columnSortOrder)
                     ->where("kode_reseller",$this->kode)
@@ -46,8 +46,21 @@ class MutasiBrowseController extends Controller
                     })
                     ->whereBetween("tanggal",[$date_from,$date_end])
                     ->skip($this->start)
-                    ->take($this->rowperpage)
-                    ->get()->toArray();
+                    ->take($this->rowperpage);
+
+        if($type == 'all'){
+            $response['count'] = $response['count']->count();
+            $response['totalRecordswithFilter'] = $response['totalRecordswithFilter']->count();
+            $response['records'] = $response['records']->get()->toArray();
+        }elseif($type == "manual"){
+            $response['count'] = $response['count']->where("jenis",null)->count();
+            $response['totalRecordswithFilter'] = $response['totalRecordswithFilter']->where("jenis",null)->count();
+            $response['records'] = $response['records']->where("jenis",null)->get()->toArray();
+        }else{
+            $response['count'] = $response['count']->where("jenis",$type)->count();
+            $response['totalRecordswithFilter'] = $response['totalRecordswithFilter']->where("jenis",$type)->count();
+            $response['records'] = $response['records']->where("jenis",$type)->get()->toArray();
+        }
 
         return fractal()
             ->item($response)
@@ -75,7 +88,7 @@ class MutasiBrowseController extends Controller
                 );
             }elseif(empty($v->jenis)){
                 $arr[] = array(
-                    "jenis" => null,
+                    "jenis" => 'manual',
                     "deskripsi" => "Mutasi Manual"
                 );
             }
