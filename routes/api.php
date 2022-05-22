@@ -34,6 +34,6 @@ Route::group(['prefix' => 'ticket'], function () {
 
 Route::group(['prefix' => 'mutasi'], function() {
     Route::post("/", [MutasiBrowseController::class,"get"]);
-    Route::get("/", [MutasiBrowseController::class,"get_type"]);
+    Route::post("/get_type", [MutasiBrowseController::class,"get_type"]);
 
 });
