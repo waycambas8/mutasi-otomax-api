@@ -6,6 +6,7 @@ use App\Http\Controllers\TestingController;
 use App\Http\Controllers\UserController\UserController;
 use App\Http\Controllers\TicketController\TicketBrowseController;
 use App\Http\Controllers\MutasiController\MutasiBrowseController;
+use App\Http\Controllers\TransaksiController\TransaksiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,4 +37,8 @@ Route::group(['prefix' => 'mutasi'], function() {
     Route::post("/", [MutasiBrowseController::class,"get"]);
     Route::post("/get_type", [MutasiBrowseController::class,"get_type"]);
 
+});
+
+Route::group(['prefix' => 'transaksi'], function() {
+    Route::post("/", [TransaksiController::class,"get"]);
 });

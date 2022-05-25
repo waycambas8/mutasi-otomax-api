@@ -70,6 +70,10 @@ class MutasiBrowseController extends Controller
 
     public function get_type(Request $request){
         $data = Mutasi::select("jenis")->groupBy("jenis")->get();
+        $arr[] = array(
+            "jenis" => "all",
+            "deskripsi" => "Semua"
+        );
         foreach($data as $v){
             if($v->jenis == "G"){
                 $arr[] = array(
