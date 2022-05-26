@@ -23,7 +23,7 @@ class UserMiddleware extends BaseMiddleware
             $this->Model->token = bcrypt(base64_encode($this->Model->kode.":".$this->Model->pin.":".Carbon::now()));
             $this->Model->token_date = Carbon::now()->format("Y-m-d h:i:s");
             $this->Model->expired_token = Carbon::now()->addDay(1)->format("Y-m-d h:i:s");
-            $this->Model->ip = $this->_Request->ip();
+            $this->Model->ip = $this->_Request->ip;
             $this->Model->response = $this->code['success'];
         }
     }
@@ -32,6 +32,7 @@ class UserMiddleware extends BaseMiddleware
         $validator = Validator::make($this->_Request->all(), [
             'kode' => 'required|max:255',
             'pin' => 'required',
+            'ip' => 'required'
         ]);
  
         if ($validator->fails()) {
