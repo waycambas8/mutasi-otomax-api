@@ -9,11 +9,13 @@ use App\Models\Transaksi;
 
 use App\Http\Transformer\DatatablesTransformers\DatatablesTransformers;
 use App\Traits\Datatables;
+use App\Traits\Browse;
+
 use Carbon\Carbon;
 
 class TransaksiController extends Controller
 {
-    use  Datatables;
+    use  Datatables,Browse;
 
     public function get(Request $request){
         $this->datatables($request);
@@ -55,6 +57,8 @@ class TransaksiController extends Controller
             ->take($this->rowperpage)
             ->get()->toArray();
         
+        $response['status'] = $this->status()->status;
+
         
         return fractal()
             ->item($response)

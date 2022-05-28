@@ -9,11 +9,13 @@ use App\Models\Mutasi;
 
 use App\Http\Transformer\DatatablesTransformers\DatatablesTransformers;
 use App\Traits\Datatables;
+use App\Traits\Browse;
+
 use Carbon\Carbon;
 
 class MutasiBrowseController extends Controller
 {
-    use Datatables;
+    use Datatables, Browse;
     
     public function get(Request $request){
         $this->datatables($request);
@@ -61,6 +63,9 @@ class MutasiBrowseController extends Controller
             $response['totalRecordswithFilter'] = $response['totalRecordswithFilter']->where("jenis",$type)->count();
             $response['records'] = $response['records']->where("jenis",$type)->get()->toArray();
         }
+
+        $response['status'] = $this->status()->status;
+
 
         return fractal()
             ->item($response)

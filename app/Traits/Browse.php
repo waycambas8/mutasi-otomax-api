@@ -168,4 +168,106 @@ trait Browse
         }
         return $this;
     }
+
+    public function status(){
+        $this->status = array(
+            [
+                "status" => 44,
+                "msg" => "Produk Salah",
+                "color" => "#8E44AD"
+            ],
+            [
+                "status" => 21,
+                "msg" => "Format Salah",
+                "color" => "#F39C12"
+            ],
+            [
+                "status" => 50,
+                "msg" => "Diabaikan",
+                "color" => "#3498DB"
+            ],
+            [
+                "status" => 64,
+                "msg" => "Diabaikan",
+                "color" => "#3498DB"
+            ],
+            [
+                "status" => 42,
+                "msg" => "Format Salah",
+                "color" => "#E74C3C"
+            ],
+            [
+                "status" => 55,
+                "msg" => "Time Out",
+                "color" => "#F1948A"
+            ],
+            [
+                "status" => 52,
+                "msg" => "Tujuan Salah",
+                "color" => "#943126"
+            ],
+            [
+                "status" => 43,
+                "msg" => "Saldo Tidak Cukup",
+                "color" => "#E74C3C"
+            ],
+            [
+                "status" => 47,
+                "msg" => "Produk Gangguan",
+                "color" => "#BB8FCE"
+            ],
+            [
+                "status" => 49,
+                "msg" => "Pin Salah",
+                "color" => "#C0392B"
+            ],
+            [
+                "status" => 56,
+                "msg" => "Nomor Blackist",
+                "color" => "#CB4335"
+            ],
+            [
+                "status" => 40,
+                "msg" => "Gagal",
+                "color" => "#E74C3C"
+            ],
+            [
+                "status" => 41,
+                "msg" => "Bukan Reseller",
+                "color" => "#E74C3C"
+            ],
+            [
+                "status" => 46,
+                "msg" => "Transaksi Double",
+                "color" => "#F9E79F"
+            ],
+            [
+                "status" => 45,
+                "msg" => "Stok Kosong",
+                "color" => "#C39BD3"
+            ],
+            [
+                "status" => 51,
+                "msg" => "Reseller Tidak Aktif",
+                "color" => "#EC7063"
+            ],
+            [
+                "status" => 1,
+                "msg" => "Sedang Diproses",
+                "color" => "#F4D03F"
+            ],
+            [
+                "status" => 3,
+                "msg" => "Gagal Kirim",
+                "color" => "#E67E22"
+            ],
+            [
+                "status" => 20,
+                "msg" => "Sukses",
+                "color" => "#82E0AA"
+            ],
+        );
+
+        return $this;
+    }
 }

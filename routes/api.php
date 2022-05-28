@@ -8,7 +8,7 @@ use App\Http\Controllers\TicketController\TicketBrowseController;
 use App\Http\Controllers\MutasiController\MutasiBrowseController;
 use App\Http\Controllers\TransaksiController\TransaksiController;
 use App\Http\Controllers\PricelistController\PricelistController;
-
+use App\Http\Controllers\DashboardController\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,5 +49,10 @@ Route::group(['prefix' => 'transaksi'], function() {
 Route::group(['prefix' => 'pricelist'], function() {
     Route::post("/", [PricelistController::class,"get"]);
     Route::post("get_produk", [PricelistController::class,"get_produk"]);
+
+});
+
+Route::group(['prefix' => 'dashboard'], function() {
+    Route::post("/saldo", [DashboardController::class,"saldo"]);
 
 });
