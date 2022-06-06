@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\Mutasi;
+use Illuminate\Support\Facades\Validator;
 
 use App\Http\Transformer\DatatablesTransformers\DatatablesTransformers;
+use App\Http\Transformer\DetailTransformers\DetailTransformers;
+
 use App\Traits\Datatables;
 use App\Traits\Browse;
 
@@ -103,6 +106,74 @@ class MutasiBrowseController extends Controller
             }
         }
         return response()->json($arr);
+    }
+
+    public function detail(Request $request){
+        $kode = (!empty($request->get("kode")))?$request->get("kode"):1111111;
+
+        $validator = Validator::make($request->all(), [
+            'kode' => 'required|integer|digits_between:1,9',
+        ]);
+ 
+        if ($validator->fails()) {
+            $msg = array(
+                    "msg" => $validator->messages()->toArray(),
+                    "response" => 404
+                );
+
+            return fractal()
+                ->item($msg)
+                ->transformWith(new DetailTransformers)
+                ->serializeWith(new \Spatie\Fractalistic\ArraySerializer()); 
+        }
+
+        if(!Mutasi::where("kode",$kode)->where("kode_reseller",getallheaders()['kode'])->exists()){
+            $response['msg'] = "Tidak memiliki akses untuk data ini";
+            $response['response'] = 404;
+
+            return fractal()
+                ->item($response)
+                ->transformWith(new DetailTransformers)
+                ->serializeWith(new \Spatie\Fractalistic\ArraySerializer()); 
+        }
+
+        if(Mutasi::where("kode",$kode)->where("kode_transaksi","!=",null)->exists()){
+            $response = Mutasi::select(
+                "mutasi.kode as kode",
+                "mutasi.kode_reseller as kode_reseller",
+                "mutasi.tanggal as tanggal",
+                "mutasi.jumlah as jumlah",
+                "mutasi.jenis as jenis",
+                "mutasi.kode_transaksi as kode_transaksi",
+                "mutasi.saldo_akhir as saldo_akhir",
+                "transaksi.tgl_entri as tgl_entri",
+                "transaksi.kode_produk as kode_produk",
+                "transaksi.tujuan as tujuan",
+                "transaksi.pengirim as pengirim",
+                "transaksi.perintah as perintah",
+                "transaksi.kode_area as kode_area",
+                "transaksi.ref_id as ref_id",
+                "transaksi.saldo_awal as saldo_awal"
+            )->join("transaksi","mutasi.kode_transaksi","transaksi.kode")->where("mutasi.kode",$kode)->first();
+        } else{
+            $response = Mutasi::select(
+                "mutasi.kode as kode",
+                "mutasi.kode_reseller as kode_reseller",
+                "mutasi.tanggal as tanggal",
+                "mutasi.jumlah as jumlah",
+                "mutasi.jenis as jenis",
+                "mutasi.kode_transaksi as kode_transaksi",
+                "mutasi.saldo_akhir as saldo_akhir"
+            )->where("mutasi.kode",$kode)->first();
+        }
+        
+        $response['response'] = 200;
+        return fractal()
+            ->item($response)
+            ->transformWith(new DetailTransformers)
+            ->serializeWith(new \Spatie\Fractalistic\ArraySerializer()); 
+
+
     }
 
     
