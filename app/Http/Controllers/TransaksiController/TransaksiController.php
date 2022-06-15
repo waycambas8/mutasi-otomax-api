@@ -25,34 +25,37 @@ class TransaksiController extends Controller
 
         $response['count'] =  Transaksi::select('count(*) as allcount',"produk.nama as name_product","produk.kode as produk_code","transaksi.*")
             ->join("produk","transaksi.kode_produk","produk.kode")
-            ->where("kode_reseller",$this->kode)
-            ->whereBetween("tgl_status",[$date_from,$date_end])
-            ->orderBy("kode","desc")
+            ->join('mutasi',"mutasi.kode_transaksi","transaksi.kode")
+            ->where("transaksi.kode_reseller",$this->kode)
+            ->whereBetween("transaksi.tgl_status",[$date_from,$date_end])
+            ->orderBy("transaksi.kode","desc")
             ->count();
 
-        $response['totalRecordswithFilter'] = Transaksi::select("produk.kode as produk_code","produk.nama as name_product","transaksi.*")->where("kode_reseller",$this->kode)
+        $response['totalRecordswithFilter'] = Transaksi::select("produk.kode as produk_code","produk.nama as name_product","transaksi.*")->where("transaksi.kode_reseller",$this->kode)
             ->join("produk","transaksi.kode_produk","produk.kode")
+            ->join('mutasi',"mutasi.kode_transaksi","transaksi.kode")
             ->where(function ($query) use ($searchValue) {
-                $query->where("tgl_status","like","%".$searchValue."%")
-                    ->orWhere("kode_produk","like","%".$searchValue."%")
-                    ->orWhere("sn","like","%".$searchValue."%")
-                    ->orWhere("tujuan","like","%".$searchValue."%");
+                $query->where("transaksi.tgl_status","like","%".$searchValue."%")
+                    ->orWhere("transaksi.kode_produk","like","%".$searchValue."%")
+                    ->orWhere("transaksi.sn","like","%".$searchValue."%")
+                    ->orWhere("transaksi.tujuan","like","%".$searchValue."%");
             })
-            ->whereBetween("tgl_status",[$date_from,$date_end])
-            ->orderBy("kode","desc")
+            ->whereBetween("transaksi.tgl_status",[$date_from,$date_end])
+            ->orderBy("transaksi.kode","desc")
             ->count();
             
 
-        $response['records'] = Transaksi::select("produk.kode as produk_code","produk.nama as name_product","transaksi.*")->orderBy($this->columnName,$this->columnSortOrder)
+        $response['records'] = Transaksi::select("produk.kode as produk_code","produk.nama as name_product","transaksi.*","mutasi.saldo_akhir as saldo_akhir")->orderBy($this->columnName,$this->columnSortOrder)
             ->join("produk","transaksi.kode_produk","produk.kode")
-            ->where("kode_reseller",$this->kode)
+            ->join('mutasi',"mutasi.kode_transaksi","transaksi.kode")
+            ->where("transaksi.kode_reseller",$this->kode)
             ->where(function ($query) use ($searchValue) {
-                $query->where("tgl_status","like","%".$searchValue."%")
-                    ->orWhere("kode_produk","like","%".$searchValue."%")
-                    ->orWhere("sn","like","%".$searchValue."%")
-                    ->orWhere("tujuan","like","%".$searchValue."%");
+                $query->where("transaksi.tgl_status","like","%".$searchValue."%")
+                    ->orWhere("transaksi.kode_produk","like","%".$searchValue."%")
+                    ->orWhere("transaksi.sn","like","%".$searchValue."%")
+                    ->orWhere("transaksi.tujuan","like","%".$searchValue."%");
             })
-            ->whereBetween("tgl_status",[$date_from,$date_end])
+            ->whereBetween("transaksi.tgl_status",[$date_from,$date_end])
             ->skip($this->start)
             ->take($this->rowperpage)
             ->get()->toArray();
