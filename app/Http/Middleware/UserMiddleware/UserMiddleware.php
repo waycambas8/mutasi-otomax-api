@@ -54,7 +54,7 @@ class UserMiddleware extends BaseMiddleware
         }
 
         if(!$this->Model->login = Users::where("kode",$this->_Request->kode)->where("pin",$this->_Request->pin)->exists()){
-            $this->msg = array(array("msg" => "Code or Pin is wrong","response" => $this->code['fail']));
+            $this->msg = array(array("msg" => array("Code or Pin is wrong"),"response" => $this->code['fail']));
             return false;
         }
         return true;

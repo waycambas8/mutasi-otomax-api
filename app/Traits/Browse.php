@@ -183,12 +183,12 @@ trait Browse
             ],
             [
                 "status" => 50,
-                "msg" => "Diabaikan",
+                "msg" => "Gagal",
                 "color" => "#3498DB"
             ],
             [
                 "status" => 64,
-                "msg" => "Diabaikan",
+                "msg" => "Digagalkan",
                 "color" => "#3498DB"
             ],
             [
