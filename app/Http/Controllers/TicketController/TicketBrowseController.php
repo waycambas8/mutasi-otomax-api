@@ -53,7 +53,7 @@ class TicketBrowseController extends Controller
                     ->take($this->rowperpage)
                     ->get()->toArray();
         
-        $response['status'] = $this->status()->status;
+        $response['status'] = $this->ticket_status()->status;
                     
         return fractal()
             ->item($response)

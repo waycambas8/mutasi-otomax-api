@@ -270,4 +270,27 @@ trait Browse
 
         return $this;
     }
+
+    public function ticket_status(){
+        $this->status = array(
+            [
+                "status" => 'C',
+                "msg" => "Cancel",
+                "color" => "#FF4949"
+            ],
+            [
+                "status" => 'O',
+                "msg" => "Open",
+                "color" => "#FF8D29"
+            ],
+            [
+                "status" => 'S',
+                "msg" => "Settled",
+                "color" => "#37E2D5"
+            ],
+            
+        );
+
+        return $this;
+    }
 }
