@@ -26,7 +26,13 @@ class TransaksiController extends Controller
         $response['count'] =  Transaksi::select('count(*) as allcount',"produk.nama as name_product","produk.kode as produk_code","transaksi.*")
             ->join("produk","transaksi.kode_produk","produk.kode")
             ->join('mutasi',"mutasi.kode_transaksi","transaksi.kode")
-            ->where("transaksi.kode_reseller",$this->kode)
+            ->where(function ($query) use ($searchValue) {
+                $query->where("transaksi.tgl_status","like","%".$searchValue."%")
+                    ->orWhere("transaksi.kode_produk","like","%".$searchValue."%")
+                    ->orWhere("transaksi.sn","like","%".$searchValue."%")
+                    ->orWhere("transaksi.kode","like","%".$searchValue."%")
+                    ->orWhere("transaksi.tujuan","like","%".$searchValue."%");
+            })
             ->whereBetween("transaksi.tgl_status",[$date_from,$date_end])
             ->orderBy("transaksi.kode","desc")
             ->count();
@@ -38,6 +44,7 @@ class TransaksiController extends Controller
                 $query->where("transaksi.tgl_status","like","%".$searchValue."%")
                     ->orWhere("transaksi.kode_produk","like","%".$searchValue."%")
                     ->orWhere("transaksi.sn","like","%".$searchValue."%")
+                    ->orWhere("transaksi.kode","like","%".$searchValue."%")
                     ->orWhere("transaksi.tujuan","like","%".$searchValue."%");
             })
             ->whereBetween("transaksi.tgl_status",[$date_from,$date_end])
@@ -53,6 +60,7 @@ class TransaksiController extends Controller
                 $query->where("transaksi.tgl_status","like","%".$searchValue."%")
                     ->orWhere("transaksi.kode_produk","like","%".$searchValue."%")
                     ->orWhere("transaksi.sn","like","%".$searchValue."%")
+                    ->orWhere("transaksi.kode","like","%".$searchValue."%")
                     ->orWhere("transaksi.tujuan","like","%".$searchValue."%");
             })
             ->whereBetween("transaksi.tgl_status",[$date_from,$date_end])
