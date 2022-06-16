@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\WolescastsSearch;
 use App\Models\User;
+use App\Models\Bank;
 
 use Closure;
 
@@ -291,6 +292,20 @@ trait Browse
             
         );
 
+        return $this;
+    }
+
+    public function bank(){
+        $data = Bank::select("kode","bank")->get();
+        $this->bank = array();
+        foreach($data as $v){
+            $this->bank[] = array(
+                
+                "kode" => $v->kode,
+                "bank" => $v->bank
+                
+            );
+        }
         return $this;
     }
 }

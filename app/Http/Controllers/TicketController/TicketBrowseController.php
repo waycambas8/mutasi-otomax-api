@@ -25,11 +25,13 @@ class TicketBrowseController extends Controller
 
         $response['count'] = Ticket::select('count(*) as allcount')
                 ->join("inbox","inbox.kode","tiket_deposit.kode_inbox")
+                ->leftJoin("data_bank","tiket_deposit.kode_data_bank","data_bank.kode")
                 ->where("tiket_deposit.kode_reseller",$this->kode)
                 ->whereBetween("tiket_deposit.tgl_status",[$date_from,$date_end])
                 ->count();
         $response['totalRecordswithFilter'] = Ticket::where("tiket_deposit.kode_reseller",$this->kode)
                     ->join("inbox","inbox.kode","tiket_deposit.kode_inbox")
+                    ->leftJoin("data_bank","tiket_deposit.kode_data_bank","data_bank.kode")
                     ->where(function ($query) use ($searchValue) {
                         $query->where("tiket_deposit.waktu","like","%".$searchValue."%")
                             ->orWhere("tiket_deposit.jumlah","like","%".$searchValue."%")
@@ -39,8 +41,9 @@ class TicketBrowseController extends Controller
                     ->whereBetween("tiket_deposit.tgl_status",[$date_from,$date_end])
                     ->count();
         
-        $response['records'] = Ticket::select("inbox.status as status_inbox","inbox.pesan as pesan","tiket_deposit.*")->orderBy("tiket_deposit.".$this->columnName,$this->columnSortOrder)
+        $response['records'] = Ticket::select("inbox.status as status_inbox","inbox.pesan as pesan","tiket_deposit.*","data_bank.kode as kode_bank","data_bank.bank as bank")->orderBy("tiket_deposit.".$this->columnName,$this->columnSortOrder)
                     ->join("inbox","inbox.kode","tiket_deposit.kode_inbox")
+                    ->leftJoin("data_bank","tiket_deposit.kode_data_bank","data_bank.kode")
                     ->where("tiket_deposit.kode_reseller",$this->kode)
                     ->where(function ($query) use ($searchValue) {
                         $query->where("tiket_deposit.waktu","like","%".$searchValue."%")
@@ -54,7 +57,7 @@ class TicketBrowseController extends Controller
                     ->get()->toArray();
         
         $response['status'] = $this->ticket_status()->status;
-                    
+
         return fractal()
             ->item($response)
             ->transformWith(new DatatablesTransformers)
