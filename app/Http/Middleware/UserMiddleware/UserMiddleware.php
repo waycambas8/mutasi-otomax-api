@@ -25,6 +25,7 @@ class UserMiddleware extends BaseMiddleware
             $this->Model->expired_token = Carbon::now()->addDay(1)->format("Y-m-d h:i:s");
             $this->Model->ip = $this->_Request->ip;
             $this->Model->response = $this->code['success'];
+            $this->Model->status = "ready";
         }
     }
 
