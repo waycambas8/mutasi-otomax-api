@@ -11,6 +11,7 @@ use App\Http\Transformer\DatatablesTransformers\DatatablesTransformers;
 use App\Traits\Datatables;
 use App\Traits\Browse;
 
+use DB;
 use Carbon\Carbon;
 
 class TransaksiController extends Controller
@@ -24,8 +25,7 @@ class TransaksiController extends Controller
         $date_end = Carbon::parse($request->get('date_end'))->endOfDay();
 
         $response['count'] =  Transaksi::select('count(*) as allcount',"produk.nama as name_product","produk.kode as produk_code","transaksi.*")
-            ->leftJoin("produk","transaksi.kode_produk","produk.kode")
-            ->leftJoin('mutasi',"mutasi.kode_transaksi","transaksi.kode")
+            ->join("produk","transaksi.kode_produk","produk.kode")
             ->where(function ($query) use ($searchValue) {
                 $query->where("transaksi.tgl_status","like","%".$searchValue."%")
                     ->orWhere("transaksi.kode_produk","like","%".$searchValue."%")
@@ -38,8 +38,7 @@ class TransaksiController extends Controller
             ->count();
 
         $response['totalRecordswithFilter'] = Transaksi::select("produk.kode as produk_code","produk.nama as name_product","transaksi.*")->where("transaksi.kode_reseller",$this->kode)
-            ->leftJoin("produk","transaksi.kode_produk","produk.kode")
-            ->leftJoin('mutasi',"mutasi.kode_transaksi","transaksi.kode")
+            ->join("produk","transaksi.kode_produk","produk.kode")
             ->where(function ($query) use ($searchValue) {
                 $query->where("transaksi.tgl_status","like","%".$searchValue."%")
                     ->orWhere("transaksi.kode_produk","like","%".$searchValue."%")
@@ -52,9 +51,8 @@ class TransaksiController extends Controller
             ->count();
             
 
-        $response['records'] = Transaksi::select("produk.kode as produk_code","produk.nama as name_product","transaksi.*","mutasi.saldo_akhir as saldo_akhir")->orderBy($this->columnName,$this->columnSortOrder)
-            ->leftJoin("produk","transaksi.kode_produk","produk.kode")
-            ->leftJoin('mutasi',"mutasi.kode_transaksi","transaksi.kode")
+        $response['records'] = Transaksi::select("produk.kode as produk_code","produk.nama as name_product","transaksi.*")->orderBy($this->columnName,$this->columnSortOrder)
+            ->join("produk","transaksi.kode_produk","produk.kode")
             ->where("transaksi.kode_reseller",$this->kode)
             ->where(function ($query) use ($searchValue) {
                 $query->where("transaksi.tgl_status","like","%".$searchValue."%")
