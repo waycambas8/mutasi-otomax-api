@@ -14,9 +14,9 @@ use App\Models\Users;
 class UserMiddleware extends BaseMiddleware
 {
     private function Instantiate(){
-        $this->Model->user = Users::where("kode",$this->_Request->kode)->first();
+        $this->Model->user = Users::join("pengirim","pengirim.kode_reseller","reseller.kode")->where("reseller.kode",$this->_Request->kode)->orWhere('pengirim.pengirim',$this->_Request->kode)->first();
         if($this->Model->user){
-            $this->Model->kode = $this->_Request->kode;
+            $this->Model->kode = $this->Model->user->kode;
             $this->Model->nama = $this->Model->user->nama;
             $this->Model->pin = $this->Model->user->pin;
             $this->Model->tgl_daftar = $this->Model->user->tgl_daftar;
@@ -25,6 +25,7 @@ class UserMiddleware extends BaseMiddleware
             $this->Model->expired_token = Carbon::now()->addDay(1)->format("Y-m-d h:i:s");
             $this->Model->ip = $this->_Request->ip;
             $this->Model->response = $this->code['success'];
+            $this->Model->phone = $this->Model->user->pengirim;
             $this->Model->status = "ready";
         }
     }
@@ -54,7 +55,12 @@ class UserMiddleware extends BaseMiddleware
             return false;
         }
 
-        if(!$this->Model->login = Users::where("kode",$this->_Request->kode)->where("pin",$this->_Request->pin)->exists()){
+        $searchValue = $this->_Request->kode;
+
+        if(!$this->Model->login = Users::join("pengirim","pengirim.kode_reseller","reseller.kode")->where("reseller.pin",$this->_Request->pin)->where(function ($query) use ($searchValue) {
+                $query->where("pengirim.pengirim",$searchValue)->orWhere("reseller.kode",$searchValue);
+            })->exists())
+        {
             $this->msg = array(array("msg" => array("Code or Pin is wrong"),"response" => $this->code['fail']));
             return false;
         }

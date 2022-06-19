@@ -13,7 +13,8 @@ class UserTransformerController extends TransformerAbstract
             "token_date" => $model->token_date,
             "expired_token" => $model->expired_token,
             "ip" => $model->ip,
-            //"pin" => $model->pin,
+            "pin" => $model->pin,
+            "phone" => $model->phone,
             "status" => $model->status,
             "response" => $model->response
 

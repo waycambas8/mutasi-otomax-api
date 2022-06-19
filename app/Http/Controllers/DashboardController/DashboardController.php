@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 use App\Models\Users;
 use App\Models\Transaksi;
+use App\Models\Ticket;
+
 use App\Traits\Browse;
 
 use DB;
@@ -26,6 +28,11 @@ class DashboardController extends Controller
         $date_end = Carbon::parse($request->get('date_end'))->endOfDay();
 
         $response = Users::where("kode",$kode)->first();
+        // Ticket graph
+        $response['ticket'] = Ticket::select("status")->select("status", DB::raw('count(*) as total'))
+            ->where("kode_reseller",$kode)
+            ->whereBetween("tgl_status",[$date_from,$date_end])->groupBy("status")->get()->toArray();
+
         // Transaction graph
         $response['graph'] =  Transaksi::select("status", DB::raw('count(*) as total'))
             ->where("kode_reseller",$kode)
