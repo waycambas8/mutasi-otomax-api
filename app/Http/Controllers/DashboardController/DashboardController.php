@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Users;
 use App\Models\Transaksi;
 use App\Models\Ticket;
+use App\Models\Mutasi;
 
 use App\Traits\Browse;
 
@@ -29,9 +30,17 @@ class DashboardController extends Controller
 
         $response = Users::where("kode",$kode)->first();
         // Ticket graph
-        $response['ticket'] = Ticket::select("status")->select("status", DB::raw('count(*) as total'))
+        $response['ticket'] = Ticket::select("status")->select(DB::raw('sum(jumlah) as total'))
             ->where("kode_reseller",$kode)
-            ->whereBetween("tgl_status",[$date_from,$date_end])->groupBy("status")->get()->toArray();
+            ->where("status","S")
+            ->whereBetween("tgl_status",[$date_from,$date_end])->first();
+            
+        // Mutasi Mutasi
+        $response['mutasi'] = Mutasi::select(DB::raw('sum(jumlah) as total'))
+            ->where("kode_reseller",$kode)
+            ->where("jenis","T")
+            ->whereBetween("tanggal",[$date_from,$date_end])
+            ->first();
 
         // Transaction graph
         $response['graph'] =  Transaksi::select("status", DB::raw('count(*) as total'))
