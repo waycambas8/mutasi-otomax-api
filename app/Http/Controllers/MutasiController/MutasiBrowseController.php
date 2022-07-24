@@ -98,6 +98,11 @@ class MutasiBrowseController extends Controller
                     "jenis" => "B",
                     "deskripsi" => "Ticket"
                 );
+            }elseif($v->jenis == '2'){
+                $arr[] = array(
+                    "jenis" => "2",
+                    "deskripsi" => "Transfer"
+                );
             }elseif(empty($v->jenis)){
                 $arr[] = array(
                     "jenis" => 'manual',
