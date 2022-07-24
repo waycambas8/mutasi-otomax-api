@@ -77,7 +77,13 @@ class MutasiBrowseController extends Controller
     }
 
     public function get_type(Request $request){
-        $data = Mutasi::select("jenis")->groupBy("jenis")->get();
+        $data = Mutasi::select("jenis")->where( function ($query) use ($request) {
+            if (isset($request->ArrQuery->type)){
+                $query->where("jenis", "2");
+                $query->orWhere("jenis",null);
+            }
+        })->groupBy("jenis")->get();
+
         $arr[] = array(
             "jenis" => "all",
             "deskripsi" => "Semua"
@@ -98,7 +104,7 @@ class MutasiBrowseController extends Controller
                     "jenis" => "B",
                     "deskripsi" => "Ticket"
                 );
-            }elseif($v->jenis == '2'){
+            }elseif($v->jenis == 2){
                 $arr[] = array(
                     "jenis" => "2",
                     "deskripsi" => "Transfer"

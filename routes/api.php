@@ -37,7 +37,7 @@ Route::group(['prefix' => 'ticket'], function () {
 
 Route::group(['prefix' => 'mutasi'], function() {
     Route::post("/", [MutasiBrowseController::class,"get"]);
-    Route::post("/get_type", [MutasiBrowseController::class,"get_type"]);
+    Route::post("/get_type/{query}", [MutasiBrowseController::class,"get_type"])->where('query', '.+')->middleware("ArrQuery");
     Route::post("/detail", [MutasiBrowseController::class,"detail"]);
 
 });
